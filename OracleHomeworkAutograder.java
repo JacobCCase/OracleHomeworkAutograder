@@ -21,17 +21,18 @@ public class OracleHomeworkAutograder
   // JDBC driver name and database URL
   static final String JDBC_DRIVER = "com.oracle.jdbc.Driver";  
   // static final String DB_URL = "jdbc:oracle://localhost:1521";
-  static final String DB_URL = "Lab3@//localhost:1521/xe";
+  static final String DB_URL = "AutoGrader@//localhost:1521/xe";
   
   // Database credentials
-  static final String USER = "Lab3";
-  static final String PASS = "Lab3";
+  static final String USER = "Autograder";
+  static final String PASS = "Autograder";
   
   public static void main( String[] args ) throws SQLException, ClassNotFoundException
   {
     Class.forName( "oracle.jdbc.driver.OracleDriver" );
-    Connection connection = DriverManager.getConnection( "jdbc:oracle:thin:Lab3@//localhost:1521/xe", "Lab3", "Lab3" );
+    Connection connection = DriverManager.getConnection( "jdbc:oracle:thin:Autograder@//localhost:1521/xe", "Autograder", "Autograder" );
     
+    int assignmentNumber = 1;
     String uNID = "u9999999";
     
     String[] querySolutions = 
@@ -100,13 +101,14 @@ public class OracleHomeworkAutograder
     for( int i = 0; i < querySolutions.length; i++ )
     { solutionString = querySolutions[ i ];
       submittedString = querySubmissions[ i ];
-      evaluateHomeworkQuestion( uNID, i+1, submittedString, solutionString, connection, logicCriteriaItems );
+      evaluateHomeworkQuestion( uNID, assignmentNumber, i+1, submittedString, solutionString, connection, logicCriteriaItems );
     }
     
   }
   
   
   public static void evaluateHomeworkQuestion( String uNID,
+                                               int assignmentNumber,
                                                int questionNumber,
                                                String submittedQuery,
                                                String solutionQuery,
@@ -181,35 +183,38 @@ public class OracleHomeworkAutograder
               + ", Resultsets Match: " + resultSetsMatch 
               + ", Score: " + score );
       
-      String finalQueryString = "MERGE INTO Homework4Results R " + 
-  "USING ( SELECT '" + uNID + "' AS v_uNID," +
+      String finalQueryString = "MERGE INTO HomeworkResults R " + 
+  "USING ( SELECT '" + uNID + "' AS v_uNID, " +
+                 assignmentNumber + " AS v_AssignmentNumber, " +
                  questionNumber + " AS v_QuestionNumber, '" +
                  queryExecutes + "' AS v_Executes, '" +
                  meetsLogicCriteria + "' AS v_MeetsLogicCriteria, '" +
-                 resultSetsMatch + "' AS v_ResulsetsMatch, " +
+                 resultSetsMatch + "' AS v_ResultSetsMatch, " +
                  score + " AS v_Score" +
           " FROM DUAL " +
        " ) S " +
-  "ON ( R.uNID = S.v_uNID AND R.QuestionNumber = S.v_QuestionNumber ) " +
+  "ON ( R.uNID = S.v_uNID AND R.AssignmentNumber = S.v_AssignmentNumber AND R.QuestionNumber = S.v_QuestionNumber ) " +
   "WHEN MATCHED THEN UPDATE " +
     "SET R.Executes = S.v_Executes, " +
         "R.MeetsLogicCriteria = S.v_MeetsLogicCriteria, " +
-        "R.ResulsetsMatch = S.v_ResulsetsMatch, " +
+        "R.ResultSetsMatch = S.v_ResultSetsMatch, " +
         "R.Score = S.v_Score, " +
         "R.UpdatedTimestamp = CURRENT_TIMESTAMP(0) " +
   "WHEN NOT MATCHED THEN " +
     "INSERT ( uNID, " +
+             "AssignmentNumber, " +
              "QuestionNumber, " +
              "Executes, " +
              "MeetsLogicCriteria, " +
-             "ResulsetsMatch, " +
+             "ResultSetsMatch, " +
              "Score " +
            ") " +
     "VALUES ( S.v_uNID, " +
+             "S.v_AssignmentNumber, " +
              "S.v_QuestionNumber, " +
              "S.v_Executes, " +
              "S.v_MeetsLogicCriteria, " +
-             "S.v_ResulsetsMatch, " +
+             "S.v_ResultSetsMatch, " +
              "S.v_Score " +
            ")";
       
