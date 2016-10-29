@@ -88,7 +88,12 @@ public class OracleHomeworkAutograder
 "SELECT P.PRODUCT_ID,P.PRODUCT_NAME, SUM(O.QUANTITY) AS TOTAL_QUANTITY FROM PRODUCT P JOIN ORDERLINE O ON P.PRODUCT_ID= O.PRODUCT_ID GROUP BY  P.PRODUCT_ID, P.PRODUCT_NAME HAVING SUM(O.QUANTITY)  > 10;",
 "SELECT P.PRODUCT_ID, P.PRODUCT_NAME, SUM(OL.QUANTITY) AS TOTALQUANTITYORDERED FROM ORDERTABLE O  INNER JOIN ORDERLINE OL ON O.ORDER_ID = OL.ORDER_ID INNER JOIN CUSTOMER C ON O.CUST_ID = C.CUST_ID INNER JOIN PRODUCT P ON OL.PRODUCT_ID = P.PRODUCT_ID  WHERE C.STATE = 'UT' GROUP BY P.PRODUCT_ID, P.PRODUCT_NAME HAVING SUM(OL.QUANTITY) >6;"
 
+            
+            
     };
+    
+    String[] rawQuerySubmissions = { "", "", "", "", "", "" , "", "", "", "", "", "", "", "", "" };
+    System.arraycopy( querySubmissions, 0, rawQuerySubmissions, 0, querySubmissions.length );
     
     // Capitalize all query strings from the solution & strip out semicolons
     for( int i = 0; i < querySolutions.length; i++ )
@@ -109,14 +114,16 @@ public class OracleHomeworkAutograder
     }
     
     String solutionString = "";
+    String rawSubmittedString = "";
     String submittedString = "";
     
     for( int i = 0; i < querySolutions.length; i++ )
     { solutionString = querySolutions[ i ];
+      rawSubmittedString = rawQuerySubmissions[ i ];
       submittedString = querySubmissions[ i ];
-      System.out.println( submittedString );
+      System.out.println( rawSubmittedString );
       evaluateHomeworkQuestion( uNID, assignmentNumber, i+1, submittedString, solutionString, connection, logicCriteriaItems );
-      System.out.println("");
+      // System.out.println("");
     }
     
   }
