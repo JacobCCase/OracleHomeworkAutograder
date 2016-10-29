@@ -20,12 +20,12 @@ Steps:
 	static final String USER = "Autograder"; // This is the username
 	static final String PASS = "Autograder"; // This is the password
 
-7- :ocate and update the uNID variable to be set to that of the current student: 
+7- Locate and update the uNID variable to be set to that of the current student: 
 
 	String uNID = "u9999999";
 	
 8- Populate the querySolutions String array with the correct queries
 9- Populate the querySubmissions String array with the queries submitted by the student
-10-Run the program to grade the student's query submissions
+10- Run the program to grade the student's query submissions
 11- View the results in the NetBeans Output window, or query the HomeworkResults table
 
