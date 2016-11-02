@@ -33,7 +33,7 @@ public class OracleHomeworkAutograder
     Connection connection = DriverManager.getConnection( "jdbc:oracle:thin:Autograder@//localhost:1521/xe", "Autograder", "Autograder" );
     
     int assignmentNumber = 1;
-    String uNID = "u0460282";
+    String uNID = "u0270794";
     
     String[] querySolutions = 
     { "select * from product where product_price > (select avg(product_price) from product);",
@@ -49,46 +49,45 @@ public class OracleHomeworkAutograder
       "Select cust_id from customer where state='AZ' Intersect Select cust_id from ordertable where order_date > to_date('28-OCT-2008','dd-mon-yyyy') Order by cust_id;",
       "Select cust_id from customer where state='AZ' and cust_id in ( Select cust_id from ordertable where order_date > to_date('28-OCT-2008','dd-mon-yyyy') ) Order by cust_id;",
       "Select cust_id from customer where state='CA' Union  Select cust_id from ordertable where order_date > to_date('28-OCT-2008','dd-mon-yyyy') Order by cust_id;",
-      "Select product_id, product_name, sum(quantity) as Total_Quantity from orderline natural join product group by product_id, product_name having sum(quantity)>10;",
+      "Select product_id, product_name, sum(quantity) as Total_Quantity from orderline natural join product group by product_id, product_name having sum(quantity) > 10;",
       "Select product.product_id, product_name, sum(quantity) as Total_Quantity from orderline, product, customer, ordertable where orderline.product_id=product.product_id and ordertable.order_id=orderline.order_id and ordertable.cust_id=customer.cust_id and state='UT' group by product.product_id, product_name having sum(quantity)>6;"
     };
     
     String[] logicCriteriaItems = 
-    { "product_price >",
+    { "product_price > ",
       " ",
       " ",
       " ",
-      "cust_id =",
+      "cust_id = ",
       " IN",
-      "cust_id =",
+      "cust_id = ",
       " NATURAL JOIN ",
       "cust_id IN",
       " MINUS ",
       " INTERSECT ",
-      "cust_id IN",
-      " UNION SELECT ",
+      " IN",
+      " UNION ",
       "> 10",
       "state = 'UT'"
     };
     
     String[] querySubmissions = 
-    { "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE FROM PRODUCT;",
-"SELECT PRODUCT_ID, SUM(QUANTITY) FROM ORDERLINE GROUP BY PRODUCT_ID ORDER BY PRODUCT_ID ASC;",
-"SELECT PRODUCT_ID, SUM(QUANTITY) TOTAL_QUANTITY FROM ORDERLINE GROUP BY PRODUCT_ID ORDER BY TOTAL_QUANTITY ASC;",
-"SELECT PRODUCT.PRODUCT_ID, PRODUCT.PRODUCT_NAME, SUM(ORDERLINE.QUANTITY) FROM ORDERLINE, PRODUCT WHERE PRODUCT.PRODUCT_ID=ORDERLINE.PRODUCT_ID GROUP BY ORDERLINE.PRODUCT_ID, PRODUCT.PRODUCT_ID, PRODUCT.PRODUCT_NAME ORDER BY PRODUCT.PRODUCT_ID ASC;",
-"SELECT DISTINCT CUST_NAME FROM CUSTOMER, ORDERTABLE WHERE ORDERTABLE.CUST_ID = CUSTOMER.CUST_ID AND ORDER_DATE>'23-OCT-08' ORDER BY CUSTOMER.CUST_NAME ASC;",
-"SELECT DISTINCT CUST_NAME FROM CUSTOMER WHERE CUST_ID IN (SELECT CUST_ID FROM ORDERTABLE WHERE ORDER_DATE>'23-OCT-08') ORDER BY CUSTOMER.CUST_NAME;",
-"SELECT CITY, COUNT(DISTINCT(CUSTOMER.CUST_ID)) FROM CUSTOMER, ORDERTABLE WHERE ORDERTABLE.CUST_ID = CUSTOMER.CUST_ID  GROUP BY CITY ORDER BY CITY ASC;",
-"SELECT CITY, COUNT(DISTINCT(CUST_ID)) FROM CUSTOMER NATURAL JOIN ORDERTABLE  group by CITY  ORDER BY CITY;",
-"SELECT CITY, COUNT(DISTINCT(CUST_ID)) FROM CUSTOMER WHERE CUST_ID IN (SELECT CUST_ID FROM ORDERTABLE) GROUP BY CITY ORDER BY CITY;",
-"(SELECT PRODUCT_ID FROM PRODUCT MINUS SELECT PRODUCT_ID FROM ORDERLINE WHERE ORDER_ID IN (  SELECT ORDER_ID FROM ORDERTABLE WHERE ORDER_DATE > '28-OCT-08')) ORDER BY PRODUCT_ID ASC;",
-"(SELECT CUST_ID FROM CUSTOMER WHERE STATE = 'AZ' INTERSECT SELECT CUST_ID FROM ORDERTABLE WHERE ORDER_DATE > '28-OCT-08') ORDER BY CUST_ID ASC;",
-"SELECT CUST_ID FROM CUSTOMER WHERE STATE = 'AZ' AND CUST_ID IN (SELECT CUST_ID FROM ORDERTABLE WHERE ORDER_DATE > '28-OCT-2008') ORDER BY CUST_ID ASC;",
-"(SELECT CUST_ID FROM CUSTOMER WHERE STATE = 'CA' UNION SELECT CUST_ID FROM ORDERTABLE WHERE ORDER_DATE > '28-OCT-2008') ORDER BY CUST_ID ASC;",
-"SELECT P.PRODUCT_ID, P.PRODUCT_NAME, SUM(OL.QUANTITY) AS TOTALQUANTITYORDERED FROM ORDERTABLE O INNER JOIN ORDERLINE OL ON O.ORDER_ID = OL.ORDER_ID INNER JOIN CUSTOMER C ON O.CUST_ID = C.CUST_ID INNER JOIN PRODUCT P ON OL.PRODUCT_ID = P.PRODUCT_ID GROUP BY P.PRODUCT_ID, P.PRODUCT_NAME HAVING SUM(OL.QUANTITY) > 10;",
-"SELECT P.PRODUCT_ID, P.PRODUCT_NAME, SUM(OL.QUANTITY) AS TOTALQUANTITYORDERED FROM ORDERTABLE O INNER JOIN ORDERLINE OL ON O.ORDER_ID = OL.ORDER_ID INNER JOIN CUSTOMER C ON O.CUST_ID = C.CUST_ID INNER JOIN PRODUCT P ON OL.PRODUCT_ID = P.PRODUCT_ID WHERE C.STATE = 'UT' GROUP BY P.PRODUCT_ID, P.PRODUCT_NAME  HAVING SUM(OL.QUANTITY) > 6;"
+    { "Select Product_ID, Product_Name, Product_Price From Product Where Product_Price > ( Select AVG(Product_Price) From Product );",
+"Select product.Product_ID, sum(orderline.quantity) From Product,OrderLine Where product.product_id = orderline.product_id Group by product.Product_ID Order by Product.PRODUCT_ID ASC ;",
+"Select product.Product_ID, sum(orderline.quantity) From Product,OrderLine Where product.product_id = orderline.product_id Group by product.Product_ID Order by sum(orderline.quantity) ASC ;",
+"Select product.Product_ID, Product.product_name, sum(orderline.quantity) From Product,OrderLine Where product.product_id = orderline.product_id Group by product.Product_ID, Product.product_name Order by product.product_id ASC ;",
+"Select distinct cust_name From Customer, OrderTable Where Customer.cust_id = ordertable.cust_id  and ordertable.order_date > '23-OCT-2008' order by cust_name ASC ;",
+"Select distinct cust_name From Customer, Ordertable Where customer.cust_id IN (select ordertable.cust_id from ordertable where order_date > '23-OCT-2008') order by cust_name ASC ;",
+"Select city, count(distinct customer.cust_id) From customer, ordertable where customer.cust_id=ordertable.cust_id group by city order by city ASC ;",
+"Select city, count(distinct cust_id) From customer natural join ordertable group by city order by city ASC ;",
+"Select city, count(distinct customer.cust_id) From customer where cust_id in (select cust_id from ordertable) group by city order by city ASC ;",
+"Select product.product_id From product, ordertable, orderline where product.product_id=orderline.product_id --minus ??? and ordertable.order_date > '28-OCT-2008' ;",
+"Select cust_id from customer where state ='AZ' Intersect Select cust_id From ordertable where order_date > '28-OCT-2008' Order by cust_id ASC ;",
+"Select cust_id From customer where state='AZ' and cust_id in (select cust_id from ordertable where order_date > '28-OCT-2008') order by cust_id ASC ;",
+"Select cust_id from customer where state='CA' Union Select cust_id from ordertable where order_date > '28-OCT-2008' Order by cust_id ASC ;",
+"Select ordertable.product_id, product_name, --sum(quantity) as Total From ordertable natural join product --with sum(quantity) > 10 ;",
+"Select p.product_id, p.product_name, SUM( OL.Quantity ) AS TotalQuantityOrdered From OrderTable O, Orderline OL, Customer C, Product P Where O.Order_ID = OL.Order_ID And o.cust_id = c.cust_id AND OL.product_id = p.product_id and c.state = 'UT' Group By p.product_id, p.product_name HAVING SUM( ol.quantity ) > 6;"
 
-            
             
     };
     
@@ -99,12 +98,23 @@ public class OracleHomeworkAutograder
     for( int i = 0; i < querySolutions.length; i++ )
     { querySolutions[i] = querySolutions[i].toUpperCase();
       querySolutions[i] = querySolutions[i].replace( ";", "" );
+      querySolutions[i] = querySolutions[i].replace( "<", " < " );
+      querySolutions[i] = querySolutions[i].replace( ">", " > " );
+      querySolutions[i] = querySolutions[i].replace( "=", " = " );
+      // Replace multiple consecutive spaces with 1 consecutive space
+      querySolutions[i] = querySolutions[i].trim().replaceAll(" +", " ");
     }
     
     // Capitalize all query strings from the student & strip out semicolons
     for( int i = 0; i < querySubmissions.length; i++ )
     { querySubmissions[i] = querySubmissions[i].toUpperCase();
       querySubmissions[i] = querySubmissions[i].replace( ";", "" );
+      querySubmissions[i] = querySubmissions[i].replace( "<", " < " );
+      querySubmissions[i] = querySubmissions[i].replace( ">", " > " );
+      querySubmissions[i] = querySubmissions[i].replace( "=", " = " );
+      querySubmissions[i] = querySubmissions[i].replace( "lab3.", "" );
+      // Replace multiple consecutive spaces with 1 consecutive space
+      querySubmissions[i] = querySubmissions[i].trim().replaceAll(" +", " ");
     }
     
     // Capitalize all query strings from the criteria items & strip out semicolons
@@ -122,6 +132,7 @@ public class OracleHomeworkAutograder
       rawSubmittedString = rawQuerySubmissions[ i ];
       submittedString = querySubmissions[ i ];
       System.out.println( rawSubmittedString );
+      // System.out.println( submittedString );
       evaluateHomeworkQuestion( uNID, assignmentNumber, i+1, submittedString, solutionString, connection, logicCriteriaItems );
       // System.out.println("");
     }
@@ -200,9 +211,9 @@ public class OracleHomeworkAutograder
     finally
     { // Record the results in the database
       
-      System.out.println( "Question #: " + questionNumber 
-              + ", Executes: " + queryExecutes 
-              + ", Meets Logic Criteria: " + meetsLogicCriteria 
+      System.out.println( "Question #" + questionNumber 
+              + ": Executes: " + queryExecutes 
+              + ", Meets Logic Criteria of: \"" + logicCriteria + "\" " + meetsLogicCriteria 
               + ", Resultsets Match: " + resultSetsMatch 
               + ", Score: " + score );
       
